@@ -1,0 +1,7 @@
+﻿AWS Region,Operating System,Instance Type,Tenancy,Number of Instances,Savings Plan Type,Term,Purchasing Option
+eu-south-1,Red Hat Enterprise Linux,m5.xlarge,Shared,2,EC2InstanceSavingsPlans,3yr,No Upfront
+eu-central-1,Red Hat Enterprise Linux,r6i.xlarge,Shared,2,ComputeSavingsPlans,1yr,No Upfront
+eu-central-1,Red Hat Enterprise Linux,r6i.2xlarge,Shared,4,ComputeSavingsPlans,1yr,No Upfront
+eu-central-1,Red Hat Enterprise Linux,m6i.2xlarge,Shared,1,ComputeSavingsPlans,1yr,No Upfront
+eu-central-1,Linux/UNIX,m6i.2xlarge,Dedicated Instance,1,ComputeSavingsPlans,3yr,No Upfront
+eu-central-1,Linux/UNIX,m6idn,Dedicated Host,1,ComputeSavingsPlans,1yr,No Upfront
