@@ -53,7 +53,7 @@ def get_pricing_by_region(region_code):
 def get_savings_plan_rate(region_code, usage_operation, instance_family, instance_type, tenancy, sp_type, term, purchasing_option):
     region_price = get_pricing_by_region(region_code)
     sku = ''
-    sp_rate = 0
+    sp_rate = None
     products = region_price['products']
     # find correct SKU in the json response
     for product in products:
@@ -70,19 +70,28 @@ def get_savings_plan_rate(region_code, usage_operation, instance_family, instanc
             rates = term['rates']
             for rate in rates:
                 if (usage_operation == rate['discountedOperation']):
-                    #tenancy SHARED
-                    if (tenancy == 'Shared' and rate['discountedUsageType'].endswith("-BoxUsage:" + instance_type)):
-                        sp_rate = float(rate['discountedRate']['price'])
-                        break
+                    #tenancy SHARED                     
+                    if (tenancy == 'Shared'):
+                        if (rate['discountedUsageType'].endswith("-BoxUsage:" + instance_type)):
+                            sp_rate = float(rate['discountedRate']['price'])
+                            break
+                        #handle us-east-1 BoxUsage format
+                        elif (region_code == 'us-east-1' and rate['discountedUsageType'] == "BoxUsage:" + instance_type):
+                            sp_rate = float(rate['discountedRate']['price'])
+                            break
                     #tenancy DEDICATED INSTANCE
-                    elif (tenancy == 'Dedicated Instance' and rate['discountedUsageType'].endswith("-DedicatedUsage:" + instance_type)):
+                    elif (tenancy == 'Dedicated Instance' and rate['discountedUsageType'].endswith("DedicatedUsage:" + instance_type)):
                         sp_rate = float(rate['discountedRate']['price'])
                         break
                     #tenancy DEDICATED HOST
-                    elif (tenancy == 'Dedicated Host' and rate['discountedUsageType'].endswith("-HostUsage:" + instance_family)):
+                    elif (tenancy == 'Dedicated Host' and rate['discountedUsageType'].endswith("HostUsage:" + instance_family)):
                         sp_rate = float(rate['discountedRate']['price'])
                         break
             break
+
+    # handle rate not found
+    if (sp_rate is None):
+        raise ValueError('Rate not found', sku)
 
     return sp_rate
 
