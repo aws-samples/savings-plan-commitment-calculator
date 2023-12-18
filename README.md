@@ -1,6 +1,6 @@
 # Savings Plan Commitment Calculator
 
-This package contains a script to find the usage commitment (measured in $/hour) required to purchase one or more [Savings Plans](https://aws.amazon.com/savingsplans/) given a list of EC2 instances. Those instances should be part of your overall steady-state usage as per the Savings Plan's main purpose.
+This package contains a script to find the usage commitment (measured in $/hour) required to purchase one or more [Savings Plans](https://aws.amazon.com/savingsplans/) given a list of EC2 instances. Those instances should be part of your overall **steady-state usage** as per the Savings Plan's main purpose. Please note, this script doesn’t account for AWS Lambda and AWS Fargate usage. Keep this in mind when calculating your Compute Savings Plan commitment if you use these services.
 
 Note that the script is meant to help finding the proper usage commitment only. It shouldn't be used as a baseline for purchasing new savings plan. Learn more about Compute Savings Plans and EC2 Instance Savings Plans in the [AWS Documentation](https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html) and check the recommendations provided in [AWS Cost Explorer](https://console.aws.amazon.com/cost-reports/home?region=us-east-1#/dashboard).
 
@@ -8,7 +8,7 @@ Note that the script is meant to help finding the proper usage commitment only. 
 There are two ways you can choose to provide the list of EC2 instances. Either 1) automatically using the EC2 APIs from your AWS account or 2) manually filling a csv input file. 
 
 ### Option 1: Using the EC2 APIs from your AWS account
-The script *calculator_from_ec2api.py* automatically collects the EC2 instances **running** on your AWS Account using the [describe_instances](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2/client/describe_instances.html#) API. You need the required IAM permissions to view all resources in the Amazon EC2 console, you can use the same policy as this [Example: Read-only access](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-policies-ec2-console.html#ex-read-only).
+The script *calculator_from_ec2api.py* automatically collects the EC2 instances **running** on your AWS Account in the **current Region** using the [describe_instances](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2/client/describe_instances.html#) API. You need the required IAM permissions to view all resources in the Amazon EC2 console, you can use the same policy as this [Example: Read-only access](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-policies-ec2-console.html#ex-read-only).
 Then, you can just run the script with the following parameters required to the calculator:
 - **Tag Key** used to filter your EC2 instances to consider (e.g. *environment*)
 - **Tag Value** used to filter your EC2 instances to consider (e.g. *prod*)
@@ -16,14 +16,14 @@ Then, you can just run the script with the following parameters required to the 
 - **Term** (possible values: *1yr, 3yr*)
 - **Purchasing Option** (possible values: *No Upfront, Partial Upfront, All Upfront*)
 
-This is an example to find the usage commitment (measured in $/hour) for one or more EC2 Instance Saving Plans (1yr, All Upfront) for your EC2 instances running with tag key *environment* and tag value *prod* :
+This is an example to find the usage commitment (measured in $/hour) for one or more EC2 Instance Saving Plans (1yr, All Upfront) for your EC2 instances running in the current region with tag key *environment* and tag value *prod* :
  ```bash
     python3 calculator_from_ec2api.py 'environment' 'prod' 'EC2InstanceSavingsPlans' '1yr' 'All Upfront'
 ```
 
 These are the full steps to execute the script in your AWS Account.
 
-1. Log into your AWS account in which your EC2 instances are running
+1. Log into your AWS account and select the AWS Region in which your EC2 instances are running
 
 2. Launch [AWS CloudShell](https://console.aws.amazon.com/cloudshell/home) or your local shell (Python 3.10 or newer is required)
 
